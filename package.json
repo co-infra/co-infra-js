@@ -1,0 +1,17 @@
+{
+	"name": "co-infra-js",
+	"private": true,
+	"type": "module",
+	"description": "co/infra JavaScript packages, published under the @co-infra scope.",
+	"workspaces": ["packages/*"],
+	"scripts": {
+		"build": "bun run --filter '*' build",
+		"test": "vitest run",
+		"typecheck": "tsc --build"
+	},
+	"devDependencies": {
+		"tsup": "^8",
+		"typescript": "^5",
+		"vitest": "^3"
+	}
+}

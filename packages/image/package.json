@@ -1,0 +1,29 @@
+{
+	"name": "@co-infra/image",
+	"version": "0.1.0",
+	"description": "Build img.infra.coop URLs and srcsets. Zero dependencies, standalone or as an unpic transformer.",
+	"type": "module",
+	"license": "MIT",
+	"homepage": "https://infra.coop",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/co-infra/co-infra-js.git",
+		"directory": "packages/image"
+	},
+	"keywords": ["atproto", "bluesky", "image", "cdn", "srcset", "unpic"],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"files": ["dist"],
+	"sideEffects": false,
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsup src/index.ts --format esm --dts --clean",
+		"test": "vitest run"
+	}
+}
