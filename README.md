@@ -25,6 +25,24 @@ bun run build   # build every package
 To add a package, drop a folder in `packages/` with its own `package.json` named
 `@co-infra/<name>`. That is the whole setup.
 
+CI runs `typecheck`, `test`, and `build` on every PR to `main`.
+
+## Releasing
+
+Each package versions on its own track. To publish, bump the package version, merge to
+`main`, then push a package-scoped tag. The tag triggers a GitHub Actions workflow that
+verifies the tag matches the package version, runs the checks, builds, and publishes to npm
+with provenance.
+
+```bash
+# after the version bump is merged to main
+git tag image-v0.1.0
+git push origin image-v0.1.0
+```
+
+The workflow needs an `NPM_TOKEN` repository secret with publish rights to the `@co-infra`
+scope.
+
 ## License
 
 Packages here are embeddable in other people's apps, so they are permissive
@@ -33,4 +51,5 @@ their own repos.
 
 ## Status
 
-Early. `@co-infra/image` is the first package and is not yet published.
+`@co-infra/image` is complete and tested, with CI and a publish workflow in place. It is
+ready for its first npm release (v0.1.0).

@@ -1,0 +1,51 @@
+name: Publish @co-infra/image
+
+# Publishes packages/image to npm when an image-vX.Y.Z tag is pushed.
+# Each package versions on its own track, so tags are package-scoped.
+on:
+  push:
+    tags: ['image-v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - run: bun install --frozen-lockfile
+
+      - name: Check tag matches package version
+        run: |
+          tag_version="${GITHUB_REF_NAME#image-v}"
+          pkg_version="$(bun --print "require('./packages/image/package.json').version")"
+          if [ "$tag_version" != "$pkg_version" ]; then
+            echo "Tag $GITHUB_REF_NAME ($tag_version) does not match package.json ($pkg_version)" >&2
+            exit 1
+          fi
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Test
+        run: bun run test
+
+      - name: Build
+        run: bun run --filter '@co-infra/image' build
+
+      - name: Publish
+        run: npm publish --provenance --access public
+        working-directory: packages/image
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
